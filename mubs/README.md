@@ -28,6 +28,29 @@ makes them natural targets.
 |---|---|---|
 | [claim-164](claims/claim-164-butson-n24/) | No MU quadruple in C^6 from Butson Hadamard matrices of root order 24 (hence any root order dividing 24, and, via a corollary, any single root order N <= 12). | internally certified, awaiting external verification |
 
+## Related projects
+
+Adjacent machine-checkable or computational work on the d = 6 MUB
+problem. None of it is evidence for the claims above (see each claim's
+`ANCHORS.md` for the data the claims actually check against); it is
+listed to situate this work in the landscape.
+
+- [`invariant-systems-ai/mub6-wall-atlas`](https://github.com/invariant-systems-ai/mub6-wall-atlas)
+  (Zenodo DOI `10.5281/zenodo.20670933`): an exact, machine-checkable
+  "defect atlas" for MUB(6) feasibility walls, certified via Lean 4
+  kernel proofs and exact sum-of-squares certificates. Complementary
+  and non-overlapping: it certifies quantitative obstructions after
+  specific MU *triples* (and explicitly does not address the
+  fourth-basis question), whereas claim-164 exhausts a discrete
+  stratum at the *quadruple* level. Its certificate-hashing and ledger
+  conventions influenced the evidence format used here.
+- Grassl's `mub_search.py` (see M. Grassl, "On SIC-POVMs and MUBs in
+  dimension 6", arXiv:quant-ph/0406175): the community-standard
+  computational search for MU triplets in dimension six; triplet-only.
+- The [online catalogue of complex Hadamard matrices](https://chaos.if.uj.edu.pl/~karol/hadamard/)
+  (Bruzda et al.): the standard reference map of the order-6 Hadamard
+  landscape in which the Butson strata sit.
+
 ## Standard references
 
 - I. Bengtsson, W. Bruzda, A. Ericsson, J.-A. Larsson, W. Tadej,
