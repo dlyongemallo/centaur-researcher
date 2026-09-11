@@ -1,0 +1,109 @@
+{
+  "deterministic_content_sha256": "61f05679e90e3d9d9ea843c9a44841557ecfdda2e462fd4abd63545102107822",
+  "orders": [
+    6,
+    8,
+    12,
+    24
+  ],
+  "per_order": {
+    "12": {
+      "dephased_row_sets": 2184,
+      "equivalence_classes": {
+        "col": 28,
+        "col_T": 16,
+        "col_T_K": 12
+      },
+      "timing_seconds": {
+        "orbit_col": 0.676,
+        "orbit_col_T": 1.406,
+        "orbit_col_T_K": 2.754
+      },
+      "u_census": {
+        "0": 1884,
+        "12": 60,
+        "6": 240
+      }
+    },
+    "24": {
+      "dephased_row_sets": 7584,
+      "equivalence_classes": {
+        "col": 82,
+        "col_T": 43,
+        "col_T_K": 28
+      },
+      "timing_seconds": {
+        "orbit_col": 2.448,
+        "orbit_col_T": 4.857,
+        "orbit_col_T_K": 9.599
+      },
+      "u_census": {
+        "0": 6852,
+        "12": 60,
+        "24": 360,
+        "40": 72,
+        "6": 240
+      }
+    },
+    "6": {
+      "dephased_row_sets": 312,
+      "equivalence_classes": {
+        "col": 6,
+        "col_T": 4,
+        "col_T_K": 3
+      },
+      "timing_seconds": {
+        "orbit_col": 0.097,
+        "orbit_col_T": 0.192,
+        "orbit_col_T_K": 0.423
+      },
+      "u_census": {
+        "0": 312
+      }
+    },
+    "8": {
+      "dephased_row_sets": 432,
+      "equivalence_classes": {
+        "col": 6,
+        "col_T": 4,
+        "col_T_K": 4
+      },
+      "timing_seconds": {
+        "orbit_col": 0.132,
+        "orbit_col_T": 0.264,
+        "orbit_col_T_K": 0.528
+      },
+      "u_census": {
+        "0": 252,
+        "8": 180
+      }
+    }
+  },
+  "sub_butson_embeddings_into_N": {
+    "embeddings": {
+      "12": 2184,
+      "12_matches_bh6_12": true,
+      "6": 312,
+      "6_matches_bh6_6": true,
+      "8": 432,
+      "8_matches_bh6_8": true
+    },
+    "top_order": 24
+  },
+  "timing": {
+    "12": {
+      "enumeration_seconds": 14.109
+    },
+    "24": {
+      "enumeration_seconds": 266.517
+    },
+    "6": {
+      "enumeration_seconds": 0.116
+    },
+    "8": {
+      "enumeration_seconds": 1.66
+    }
+  },
+  "wall_seconds": 570.338,
+  "with_transpose_conjugation": true
+}

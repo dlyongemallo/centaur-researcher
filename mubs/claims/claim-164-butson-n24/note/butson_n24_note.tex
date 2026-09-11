@@ -1,0 +1,361 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\ip}[2]{\langle #1 | #2 \rangle}
+
+\title{No MUB quadruple in dimension six from Butson Hadamard
+matrices of root order~24\\[1ex]
+\large A certified finite reduction (draft for verification)}
+\author{D.~L.~Yonge-Mallo}
+\date{2026-09-10 (draft v0.1)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We prove that no four mutually unbiased bases of $\CC^6$ have the form
+$\{I, H_1/\sqrt6, H_2/\sqrt6, H_3/\sqrt6\}$ with every entry of $H_1,
+H_2, H_3$ a $24$th root of unity; equivalently, no MU quadruple in
+dimension six can be built from Butson Hadamard matrices in
+$\mathrm{BH}(6,24)$. The proof is a reduction of the statement to a
+finite assertion (Proposition~\ref{prop:reduction}), checked by an
+exhaustive exact computation in $\ZZ[\zeta_{24}]$ carried out by three
+independently written programs. This confirms, in certified exact
+arithmetic, the numerical search of Bengtsson et
+al.~\cite{bengtsson2007} at $24$th roots, and extends the published
+theorem record, which stops at $\mathrm{BH}(6,12)$
+\cite[Thm.~7.15]{mcnulty2026}. As a by-product we obtain the first
+classification of $\mathrm{BH}(6,24)$: it has exactly $25$
+monomial-equivalence classes ($14$ up to transpose). This note contains
+the complete reduction argument and the algorithm contract needed to
+re-implement the computation independently; the accompanying repository
+contains code, deterministic logs, and crosswalks to independently
+published data.
+\end{abstract}
+
+\section{Introduction}
+
+Two orthonormal bases $\{e_i\}$, $\{f_j\}$ of $\CC^d$ are
+\emph{mutually unbiased} (MU) if $|\ip{e_i}{f_j}|^2 = 1/d$ for all
+$i,j$. In every prime-power dimension exactly $d+1$ MU bases exist;
+dimension six is the first open case, and Zauner
+\cite{zauner1999} conjectured that no more than three MU bases exist in
+$\CC^6$. Writing bases in Hadamard form, a hypothetical fourth basis
+yields an \emph{MU quadruple} $\{I, H_1/\sqrt6, H_2/\sqrt6,
+H_3/\sqrt6\}$ where each $H_k$ is a complex Hadamard matrix of order
+six and the three are pairwise mutually unbiased. Progress on the
+conjecture typically takes the form of excluding strata of the complex
+Hadamard landscape from participating in a quadruple.
+
+A \emph{Butson Hadamard matrix} $H \in \mathrm{BH}(d, N)$ is a $d
+\times d$ matrix with all entries $N$th roots of unity and $H H^* = d
+I$ \cite{butson1962}. These discrete strata admit finite exact
+exhaustion. Bengtsson et al.~\cite{bengtsson2007} searched them
+numerically in 2007: they enumerated the order-six Hadamard matrices
+with $12$th- and $24$th-root entries, the vectors unbiased to each, the
+third bases these admit, and whether any two third bases yield four MU
+bases, finding only triplets. The survey \cite{mcnulty2026} records the
+resulting theorem only at root order $12$ (its Theorem~7.15). The
+present note upgrades the $24$th-root exclusion to a certified theorem.
+
+\begin{theorem}\label{thm:main}
+There is no MU quadruple $\{I, H_1/\sqrt6, H_2/\sqrt6, H_3/\sqrt6\}$ in
+$\CC^6$ with $H_1, H_2, H_3 \in \mathrm{BH}(6, 24)$.
+\end{theorem}
+
+Since $\zeta_m = \zeta_{24}^{24/m}$ embeds the $m$th roots into the
+$24$th roots for every $m \mid 24$, the theorem covers all entries
+drawn from roots of unity of order dividing $24$, in any mixture
+(Corollary~\ref{cor:divisors}), and a small additional computation
+extends the exclusion to every single root order $N \le 12$
+(Corollary~\ref{cor:small}). The theorem says nothing about other root
+orders or about the continuous Hadamard families, and so does not
+resolve Zauner's conjecture. The stratum is not vacuous: it contains
+genuine MU triplets, and the computation in fact enumerates all
+$1{,}920$ of them and shows none extends.
+
+\section{Notation and elementary reductions}
+
+Fix $N = 24$, $\omega = e^{2\pi i/24}$, and $d = 6$. We work with
+\emph{exponent vectors} $a \in (\ZZ/24)^6$, representing the unimodular
+vector $\omega^a = (\omega^{a_0}, \dots, \omega^{a_5}) \in \CC^6$. A
+vector (or matrix row or column) is \emph{dephased} if $a_0 = 0$. For
+$a \in (\ZZ/24)^6$ put
+\[
+  S(a) \;=\; \sum_{j=0}^{5} \omega^{a_j} \;\in\; \ZZ[\omega].
+\]
+We say $a$ satisfies the \emph{$Z$-condition} if $S(a) = 0$ and the
+\emph{$M$-condition} if $|S(a)|^2 = 6$. Both conditions are invariant
+under adding a constant to all coordinates of $a$, since this
+multiplies $S(a)$ by a root of unity. For $u, w \in (\ZZ/24)^6$,
+\[
+  \ip{\omega^u}{\omega^w} \;=\; \sum_j \overline{\omega^{u_j}}\,
+  \omega^{w_j} \;=\; S(w - u),
+\]
+so two unimodular root-valued vectors are \emph{orthogonal} iff their
+exponent difference satisfies the $Z$-condition, and \emph{unbiased}
+(for bases scaled by $1/\sqrt6$) iff it satisfies the $M$-condition.
+All tests are exact: $\ZZ[\omega] \cong \ZZ[x]/\Phi_{24}(x)$ with
+$\Phi_{24}(x) = x^8 - x^4 + 1$, so $S(a)$ and $|S(a)|^2 = S(a)
+\overline{S(a)}$ are integer vectors of length $8$, and the conditions
+are integer identities. Define the dephased ray classes
+\[
+  Z \;=\; \{a \in \{0\} \times (\ZZ/24)^5 : S(a) = 0\}, \qquad
+  M \;=\; \{a \in \{0\} \times (\ZZ/24)^5 : |S(a)|^2 = 6\}.
+\]
+
+Note that any unimodular vector is automatically unbiased to every
+standard basis vector, so unbiasedness to $I$ is free, and that a
+$6\times 6$ matrix with unimodular entries has orthogonal columns iff
+it has orthogonal rows (both say $\tfrac{1}{\sqrt6}H$ is unitary).
+
+\begin{lemma}[Normal form]\label{lem:normal}
+If an MU quadruple as in Theorem~\ref{thm:main} exists, then one exists
+in which additionally $H_1$ is dephased (first row and first column all
+ones) and every column of $H_2$ and $H_3$ is dephased.
+\end{lemma}
+
+\begin{proof}
+Let $D_L$ be the diagonal unitary whose $j$th entry is the conjugate of
+the $j$th entry of the first column of $H_1$; its entries are $24$th
+roots. Replacing each basis $B$ of the quadruple by $D_L B$ preserves
+all MU relations (a common unitary) and maps the standard basis to
+itself up to phases; it multiplies each $H_k$ on the left by $D_L$,
+keeping all entries in $\mu_{24}$ and making the first column of $H_1$
+all ones. Next, multiplying any $H_k$ on the \emph{right} by a diagonal
+matrix of $24$th roots rephases its columns, which changes neither the
+basis it represents nor membership in $\mathrm{BH}(6,24)$: use this to
+make the first row of $H_1$ all ones, and to dephase every column of
+$H_2$ and $H_3$.
+\end{proof}
+
+\begin{lemma}[First basis]\label{lem:first}
+The map sending a dephased $H \in \mathrm{BH}(6,24)$ to the set of its
+five non-initial rows is a bijection between dephased
+$\mathrm{BH}(6,24)$ matrices with sorted rows and $5$-element subsets
+$R \subseteq Z$ whose pairwise differences satisfy the $Z$-condition.
+Permuting the non-initial rows of $H_1$ preserves the quadruple
+property, so it suffices to enumerate the subsets $R$.
+\end{lemma}
+
+\begin{proof}
+A dephased $H$ has first row $\omega^0$ (all ones) and every row
+$r$ with $r_0 = 0$. Orthogonality of row $r$ against the all-ones row
+is $S(r) = 0$, i.e., $r \in Z$; orthogonality of rows $r, r'$ is the
+$Z$-condition on $r' - r$, which is again dephased. Conversely such a
+subset, together with the all-ones row, has pairwise orthogonal
+unimodular rows, hence lies in $\mathrm{BH}(6,24)$. Row permutations
+fixing the first row amount to left multiplication by a permutation
+matrix, which fixes the standard basis and every MU relation.
+\end{proof}
+
+\begin{lemma}[Second and third bases]\label{lem:completion}
+Fix a dephased $H_1$ with columns $h^{(0)} = 0, h^{(1)}, \dots,
+h^{(5)}$ (exponent vectors), and define the \emph{completion rays}
+\[
+  U(H_1) \;=\; \bigl\{c \in M :\ c - h^{(i)} \text{ satisfies the
+  $M$-condition for } i = 1, \dots, 5 \bigr\}.
+\]
+Then the bases unbiased to both $I$ and $H_1/\sqrt6$ that are
+representable with columns in $\mathrm{BH}(6,24)$ form (after column
+dephasing and up to column order) exactly the $6$-element subsets $C
+\subseteq U(H_1)$ whose pairwise differences satisfy the
+$Z$-condition.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:normal} each column $c$ of such a basis matrix may be
+taken dephased with entries in $\mu_{24}$. Unbiasedness against the
+column $h^{(0)} = 0$ of $H_1$ is the $M$-condition on $c - 0$, i.e., $c
+\in M$; against the remaining columns it is the $M$-condition on $c -
+h^{(i)}$ (the $M$-condition is phase-invariant, so the non-dephased
+difference is immaterial). Hence each column lies in $U(H_1)$.
+Orthogonality of two columns is the $Z$-condition on their difference.
+Distinct columns have distinct dephased exponent vectors (equal ones
+are not orthogonal), so the six columns form a $6$-subset; column order
+is immaterial for the basis. The converse direction is immediate.
+\end{proof}
+
+\begin{lemma}[Pair test]\label{lem:pair}
+With $H_1$ fixed as above, two bases given by $6$-cliques $C_2 \ne C_3
+\subseteq U(H_1)$ are mutually unbiased iff every difference $c' - c$
+with $c \in C_2$, $c' \in C_3$ satisfies the $M$-condition.
+\end{lemma}
+
+\begin{proof}
+Immediate from the correspondence between unbiasedness and the
+$M$-condition on exponent differences. (Note $C_2 = C_3$ can never
+yield an MU pair: a basis is not unbiased to itself, and indeed $S(0) =
+6$ fails the $M$-condition.)
+\end{proof}
+
+\begin{proposition}[Finite reduction]\label{prop:reduction}
+Theorem~\ref{thm:main} holds if and only if for every $5$-subset $R$ as
+in Lemma~\ref{lem:first} (equivalently, every dephased $H_1$), no two
+distinct $6$-cliques $C_2, C_3 \subseteq U(H_1)$ have all $36$
+cross-differences satisfying the $M$-condition.
+\end{proposition}
+
+\begin{proof}
+Lemmas~\ref{lem:normal}--\ref{lem:pair} map any MU quadruple in the
+stratum to such a configuration and conversely.
+\end{proof}
+
+\section{The computation}\label{sec:computation}
+
+The finite assertion of Proposition~\ref{prop:reduction} is checked by
+the following five-stage algorithm; the stage-by-stage counts are part
+of the claim and serve as checkpoints for independent
+re-implementations.
+
+\begin{enumerate}
+\item \textbf{Ray classification.} For each of the $24^5 = 7{,}962{,}624$
+  dephased exponent vectors $a$, decide the $Z$- and $M$-conditions
+  exactly in $\ZZ[x]/\Phi_{24}(x)$. Result: $|Z| = 8{,}350$ and $|M| =
+  19{,}320$.
+\item \textbf{Hadamard enumeration.} Enumerate all $5$-subsets of $Z$
+  with pairwise differences in the $Z$-condition. Result: exactly
+  $7{,}584$ dephased $\mathrm{BH}(6,24)$ row sets.
+\item \textbf{Completion rays.} For each row set, compute $U(H_1)$ by
+  the column tests of Lemma~\ref{lem:completion}. Census over the
+  $7{,}584$ matrices, written $|U|/\#\text{bases}$:
+  $0/0: 6{,}852$; \ $6/1: 240$; \ $12/4: 60$; \ $24/4: 360$; \
+  $40/0: 72$.
+\item \textbf{Completion bases.} Enumerate the $6$-cliques of
+  Lemma~\ref{lem:completion}. Result: $1{,}920$ bases, spread over
+  $660$ matrices ($240 \times 1 + 60 \times 4 + 360 \times 4$),
+  giving $420 \times \binom{4}{2} = 2{,}520$ candidate pairs.
+\item \textbf{Pair refutation.} For each of the $2{,}520$ pairs,
+  exhibit a cross pair $(c, c')$ whose difference fails the
+  $M$-condition. All $2{,}520$ pairs are refuted; no MU quadruple
+  exists in the stratum.
+\end{enumerate}
+
+Three independently written programs (available in the accompanying
+repository, with deterministic logs and SHA-256 manifests) implement
+this contract: the original search, an adversarial referee harness that
+re-derives the $\Phi_{24}$ reduction table from a recurrence and
+verifies all bases and refutations in a second exact representation,
+and a third, code-independent enumerator. All agree on every count
+above. For re-implementers preferring floating point: over all $24^5$
+rays the smallest margin of a non-zero-sum ray from $0$ is $0.035$ and
+of a non-unbiased ray from unbiasedness is $1.2 \times 10^{-3}$, with
+no ray in an ambiguous band at double precision; the certified programs
+use exact arithmetic throughout.
+
+\section{Corollaries}
+
+\begin{corollary}\label{cor:divisors}
+No MU quadruple $\{I, H_1/\sqrt6, H_2/\sqrt6, H_3/\sqrt6\}$ exists in
+which every entry of $H_1, H_2, H_3$ is a root of unity of order
+dividing $24$ (the orders may vary from entry to entry).
+\end{corollary}
+
+\begin{proof}
+All entries then lie in $\mu_{24}$, so each $H_k \in \mathrm{BH}(6,24)$
+and Theorem~\ref{thm:main} applies.
+\end{proof}
+
+\begin{corollary}\label{cor:small}
+For every single root order $N \le 12$, no MU quadruple exists with all
+entries of $H_1, H_2, H_3$ being $N$th roots of unity.
+\end{corollary}
+
+\begin{proof}
+For $N \in \{1,2,3,4,6,8,12\}$ this is Corollary~\ref{cor:divisors}.
+For $N \in \{5, 7, 11\}$ a vanishing sum of six $N$th roots of unity
+would have length divisible by the prime $N$ (Lam--Leung
+\cite{lamleung2000}), so no row can be orthogonal to the all-ones row
+and $\mathrm{BH}(6,N) = \emptyset$. For $N \in \{9, 10\}$, direct
+computation (seconds; included in the repository) shows the analogue of
+$M$ is empty: no dephased $N$th-root vector is unbiased to the all-ones
+vector. Dephasing as in Lemma~\ref{lem:normal} stays inside $\mu_N$, so
+no basis can be unbiased to both $I$ and a dephased $H_1$, and not even
+an MU triple exists in these strata.
+\end{proof}
+
+\section{External anchors and the $\mathrm{BH}(6,24)$
+classification}\label{sec:anchors}
+
+Every stage of the computation reproduces independently published
+data.
+
+\emph{Hadamard enumeration.} Closing the $7{,}584$ dephased row sets
+(and the analogous enumerations at smaller orders) under the full
+residual group of monomial equivalence yields $1, 1, 4, 3, 11$
+equivalence classes at $N = 3, 4, 6, 8, 12$, matching the published
+classification of Lampio, \"Osterg\aa rd and Sz\"oll\H osi
+\cite{lampio2020} at every order they tabulate, and $\mathbf{25}$
+classes at $N = 24$ ($14$ up to transpose), for which no published
+value exists. Of the $25$ classes, exactly $4$, $3$, and $11$ contain
+representatives of $\mathrm{BH}(6,6)$, $\mathrm{BH}(6,8)$, and
+$\mathrm{BH}(6,12)$ respectively, and $12$ are new at root order $24$.
+Representatives with their completion data accompany this note.
+
+\emph{Completion census.} Exactly five of the $25$ classes admit at
+least one completion basis, with per-matrix base counts $4, 1, 1, 4,
+4$; they are identified as the classes of $F(0,0)$, $F(1/6, 0)$,
+$F^{T}(1/6, 0)$, $F(1/6, 1/12)$, and $D(1/8)$, matching Fig.~2 of
+\cite{bengtsson2007} class for class (one further class has $40$
+completion rays but no basis, consistently omitted there). The
+agreement of the exact census with the independent 2007 numerical
+census is a strong mutual consistency check.
+
+\emph{Theorem record.} Restricting the pipeline to $N = 12$ reproduces
+the setting of \cite[Thm.~7.15]{mcnulty2026}: $2{,}184$ dephased
+matrices, completion census $0/0: 1{,}884$, $6/1: 240$, $12/4: 60$,
+$480$ completion bases, and no unbiased pair.
+
+\section{Verification}
+
+The reduction argument of this note is elementary and short; we invite
+readers to check it directly. The finite assertion can be verified
+either by running the accompanying programs (minutes; deterministic
+logs and hashes provided) or, preferably, by independent
+re-implementation from the contract of Section~\ref{sec:computation},
+using the stage counts and the anchors of Section~\ref{sec:anchors} as
+checkpoints. The computations were authored and cross-verified by three
+independent AI systems under a human-directed protocol described in the
+repository; confirmations and refutations are equally welcome and will
+be credited.
+
+\begin{thebibliography}{9}
+
+\bibitem{zauner1999} G.~Zauner, \emph{Quantendesigns: Grundz\"uge
+einer nichtkommutativen Designtheorie}, PhD thesis, Universit\"at Wien,
+1999.
+
+\bibitem{butson1962} A.~T.~Butson, Generalized Hadamard matrices,
+\emph{Proc. Amer. Math. Soc.} \textbf{13} (1962), 894--898.
+
+\bibitem{bengtsson2007} I.~Bengtsson, W.~Bruzda, {\AA}.~Ericsson,
+J.-{\AA}.~Larsson, W.~Tadej, K.~\.Zyczkowski, Mutually unbiased bases
+and Hadamard matrices of order six, \emph{J. Math. Phys.} \textbf{48}
+(2007), 052106; arXiv:quant-ph/0610161.
+
+\bibitem{lamleung2000} T.~Y.~Lam, K.~H.~Leung, On vanishing sums of
+roots of unity, \emph{J. Algebra} \textbf{224} (2000), 91--109.
+
+\bibitem{lampio2020} P.~H.~J.~Lampio, P.~R.~J.~\"Osterg\aa rd,
+F.~Sz\"oll\H osi, Orderly generation of Butson Hadamard matrices,
+\emph{Math. Comp.} \textbf{89} (2020), 313--331; arXiv:1707.02287.
+
+\bibitem{mcnulty2026} D.~McNulty, S.~Weigert, Mutually unbiased bases
+in composite dimensions -- a review, \emph{Quantum} \textbf{10} (2026),
+2051; arXiv:2410.23997.
+
+\end{thebibliography}
+
+\end{document}

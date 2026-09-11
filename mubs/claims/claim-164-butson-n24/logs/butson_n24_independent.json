@@ -1,0 +1,21 @@
+{
+  "N": 24,
+  "candidate_pairs_rejected": 2520,
+  "deterministic_content_sha256": "2eac89c3d837af7162f3a5ae88f374362824f0fbd46382ff31b04bb8f8679506",
+  "hadamards": 7584,
+  "max_completions": 4,
+  "max_u": 40,
+  "mu_rays": 19320,
+  "reason": "all_completion_pairs_excluded",
+  "seconds": 137.417,
+  "total_completions": 1920,
+  "types": {
+    "0/0": 6852,
+    "12/4": 60,
+    "24/4": 360,
+    "40/0": 72,
+    "6/1": 240
+  },
+  "verdict": "no_quadruple",
+  "zero_rays": 8350
+}

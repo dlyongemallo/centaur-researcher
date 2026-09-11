@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use results or data from this repository, please cite it as below."
+title: "Centaur Researcher: evidence archive"
+authors:
+  - family-names: "Yonge-Mallo"
+    given-names: "David"
+type: dataset
+year: 2026
+repository-code: "https://github.com/dlyongemallo/centaur-researcher"
+license: MIT
+keywords:
+  - mutually unbiased bases
+  - complex Hadamard matrices
+  - Butson Hadamard matrices
+  - Zauner conjecture
+  - quantum information
