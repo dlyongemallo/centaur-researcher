@@ -75,7 +75,7 @@ sha256sum -c SHA256SUMS
 python3 code/butson_n24_independent.py
 git diff logs/butson_n24_independent.json
 
-# Spot-check the committed search log and exact ray arithmetic (~15 s).
+# Full exhaustion rerun compared against the committed log (~4.5 min).
 python3 code/butson_n24_search.py --verify
 ```
 
