@@ -50,6 +50,16 @@ listed to situate this work in the landscape.
 - The [online catalogue of complex Hadamard matrices](https://chaos.if.uj.edu.pl/~karol/hadamard/)
   (Bruzda et al.): the standard reference map of the order-6 Hadamard
   landscape in which the Butson strata sit.
+- The [`openai/math` preprint dump](https://github.com/openai/math)
+  (released October 2026; individual preprints dated 23 September to
+  5 October 2026) includes a paper claiming N(6) = 3 via a
+  binary64-certified native-C++ five-stage search (which, if correct,
+  would settle Zauner's d = 6 conjecture) and a companion paper
+  proving the full Matolcsi-Ruzsa-Weiner Fourier-vanishing conjecture
+  and N(6) <= 5 in exact arithmetic with a published verifier. Both
+  are AI-generated and pending independent verification by the
+  community and by this project; claim-164's BH(6, 24) exclusion
+  remains independently novel.
 
 ## Standard references
 
