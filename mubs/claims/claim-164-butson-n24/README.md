@@ -42,8 +42,7 @@ The reduction of the theorem to this finite assertion is proved in
 
 - `note/` -- the reduction note: the mathematics that equates the theorem
   with the finite computation. Read this first.
-- `code/` -- the certified programs, byte-identical to the internally
-  certified artefacts (see `SHA256SUMS`):
+- `code/` -- the certified programs (current hashes in `SHA256SUMS`):
   - `butson_n24_independent.py` -- **primary reference implementation**
     (self-contained with numpy; ~2.5 min);
   - `butson_n24_search.py` -- the original search (~4.5 min);
@@ -76,7 +75,7 @@ sha256sum -c SHA256SUMS
 python3 code/butson_n24_independent.py
 git diff logs/butson_n24_independent.json
 
-# Spot-check the committed search log and exact ray arithmetic (~15 s).
+# Full exhaustion rerun compared against the committed log (~4.5 min).
 python3 code/butson_n24_search.py --verify
 ```
 
@@ -119,3 +118,14 @@ protocol described in `../../../PROVENANCE.md`; all three re-run cold
 from a fresh clone by the human author on 2026-08-24 with byte-identical
 results. The literature reconciliation (`ANCHORS.md`) was completed on
 2026-08-24.
+
+On 2026-10-10 a row/column slip at `butson_n24_independent.py:114` and
+the superficial-verify shape of `butson_n24_search.py:verify_n24_log()`
+were fixed in response to the adversarial reduction walks of the Codex,
+Fable, and agy model families (`note/REDUCTION_WALK_*.md`). The
+aggregate outputs of `butson_n24_independent.py` are provably unchanged
+under the row/column fix (every reported statistic is a class function
+of transposition on dephased BH(6, 24) matrices), as confirmed by
+re-running the fixed `butson_n24_independent.py` cold; the regenerated
+log matches the previously committed one byte for byte modulo the
+"seconds" field.

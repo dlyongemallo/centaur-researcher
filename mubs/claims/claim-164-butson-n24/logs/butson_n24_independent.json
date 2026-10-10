@@ -7,7 +7,7 @@
   "max_u": 40,
   "mu_rays": 19320,
   "reason": "all_completion_pairs_excluded",
-  "seconds": 137.417,
+  "seconds": 134.642,
   "total_completions": 1920,
   "types": {
     "0/0": 6852,

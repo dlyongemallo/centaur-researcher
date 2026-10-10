@@ -109,39 +109,27 @@ def exhaust_24():
     return result
 
 def verify_n24_log():
-    log_path = "problems/mub-quad/logs/butson_n24_numpy_search.json"
-    if not os.path.exists(log_path):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        log_path = os.path.join(script_dir, "../logs/butson_n24_numpy_search.json")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    log_path = os.path.join(script_dir, "../logs/butson_n24_numpy_search.json")
     assert os.path.exists(log_path), f"Log file not found at {log_path}"
     with open(log_path) as f:
-        data = json.load(f)
-    assert data.get("N") == 24
-    assert data.get("verdict") == "no_quadruple"
-    assert data.get("zero_rays") == 8350
-    assert data.get("mu_rays") == 19320
-    assert data.get("hadamards") == 7584
-    assert data.get("total_completions") == 1920
-    assert data.get("max_u") == 40
-    assert data.get("max_completions") == 4
-    assert data.get("reason") == "all_completion_pairs_excluded"
-    expected_types = {
-        "0/0": 6852,
-        "12/4": 60,
-        "24/4": 360,
-        "40/0": 72,
-        "6/1": 240
-    }
-    assert data.get("types") == expected_types
-    Z, M = ray_classes_numpy(24)
-    assert len(Z) == 8350
-    assert len(M) == 19320
-    reps_list = cyclotomic_reductions(24)
-    reps = np.array(reps_list, dtype=np.int8)
-    for z_ray in Z[:10]:
-        val = reps[np.array(z_ray)].sum(axis=0)
-        assert np.all(val == 0), f"Ray {z_ray} does not sum to 0"
-    print("VERIFIED: Butson N=24 search log verified successfully.")
+        committed = json.load(f)
+    print("Re-running exhaust_24() for independent verification (expect ~4.5 min)...")
+    fresh = exhaust_24()
+    # The 'seconds' timing field is intrinsically non-deterministic; every
+    # other field must match the committed log byte for byte under the
+    # canonical sort_keys / separators serialization.
+    for d in (committed, fresh):
+        d.pop("seconds", None)
+    def canon(d):
+        return json.dumps(d, sort_keys=True, separators=(",", ":"))
+    if canon(fresh) != canon(committed):
+        raise AssertionError(
+            "committed search log differs from fresh exhaust_24() output:\n"
+            f"  committed: {canon(committed)}\n"
+            f"  fresh:     {canon(fresh)}"
+        )
+    print("VERIFIED: committed Butson N=24 search log reproduces exhaust_24() exactly.")
 
 if __name__ == "__main__":
     import argparse

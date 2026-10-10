@@ -111,7 +111,7 @@ def main():
         cols = list(zip(*rows))
         U = []
         for r in M:
-            if all(tuple((r[j] - cols[j][k]) % N for j in range(D)) in mset
+            if all(tuple((r[j] - cols[k][j]) % N for j in range(D)) in mset
                    for k in range(1, D)):
                 U.append(r)
         u_adj = graph(U, zkeys)

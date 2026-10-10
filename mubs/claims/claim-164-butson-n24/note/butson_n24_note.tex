@@ -29,8 +29,10 @@ We prove that no four mutually unbiased bases of $\CC^6$ have the form
 $\{I, H_1/\sqrt6, H_2/\sqrt6, H_3/\sqrt6\}$ with every entry of $H_1,
 H_2, H_3$ a $24$th root of unity; equivalently, no MU quadruple in
 dimension six can be built from Butson Hadamard matrices in
-$\mathrm{BH}(6,24)$. The proof is a reduction of the statement to a
-finite assertion (Proposition~\ref{prop:reduction}), checked by an
+$\mathrm{BH}(6,24)$, in the sense that all entries of the three
+transition matrices are $24$th roots of unity. The proof is a
+reduction of the statement to a finite assertion
+(Proposition~\ref{prop:reduction}), checked by an
 exhaustive exact computation in $\ZZ[\zeta_{24}]$ carried out by three
 independently written programs. This confirms, in certified exact
 arithmetic, the numerical search of Bengtsson et
@@ -83,8 +85,9 @@ extends the exclusion to every single root order $N \le 12$
 (Corollary~\ref{cor:small}). The theorem says nothing about other root
 orders or about the continuous Hadamard families, and so does not
 resolve Zauner's conjecture. The stratum is not vacuous: it contains
-genuine MU triplets, and the computation in fact enumerates all
-$1{,}920$ of them and shows none extends.
+genuine MU triples. The computation in fact enumerates all
+$1{,}920$ completion bases (MU triples with a distinguished first
+Hadamard) and shows that none extends to a quadruple.
 
 \section{Notation and elementary reductions}
 
@@ -158,7 +161,8 @@ $Z$-condition on $r' - r$, which is again dephased. Conversely such a
 subset, together with the all-ones row, has pairwise orthogonal
 unimodular rows, hence lies in $\mathrm{BH}(6,24)$. Row permutations
 fixing the first row amount to left multiplication by a permutation
-matrix, which fixes the standard basis and every MU relation.
+matrix, which when applied to all four basis matrices fixes the
+standard basis as a set and preserves every MU relation.
 \end{proof}
 
 \begin{lemma}[Second and third bases]\label{lem:completion}
